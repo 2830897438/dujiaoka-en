@@ -1,7 +1,19 @@
 FROM webdevops/php-nginx:7.4
+
+# Set Laravel public directory
+ENV WEB_DOCUMENT_ROOT=/app/public
+ENV WEB_DOCUMENT_INDEX=index.php
+ENV SERVICE_NGINX_CLIENT_MAX_BODY_SIZE=100m
+
+# Copy application
 COPY . /app
 WORKDIR /app
-RUN [ "sh", "-c", "composer install --ignore-platform-reqs" ]
-RUN echo "#!/bin/bash\nphp artisan queue:work >/tmp/work.log 2>&1 &\nsupervisord" > /app/start.sh
-RUN [ "sh", "-c", "chmod -R 777 /app" ]
-CMD [ "sh", "-c","/app/start.sh" ]
+
+# Install composer dependencies
+RUN composer install --ignore-platform-reqs --no-dev --optimize-autoloader
+
+# Set proper permissions
+RUN chmod -R 777 /app/storage /app/bootstrap/cache
+
+# Use default port 80
+EXPOSE 80
