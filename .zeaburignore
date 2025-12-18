@@ -1,0 +1,8 @@
+.git
+tests
+*.md
+*.lock
+.editorconfig
+.styleci.yml
+phpunit.xml
+dcat_admin_ide_helper.php
